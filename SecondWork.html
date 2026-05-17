@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StreamVerse</title>
+<style>
+
+/* ---------------- GLOBAL ---------------- */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, sans-serif;
+}
+
+body{
+background:#0b0b0b;
+color:white;
+overflow-x:hidden;
+}
+
+/* ---------------- LOADER ---------------- */
+
+#loader{
+position:fixed;
+width:100%;
+height:100vh;
+background:black;
+display:flex;
+align-items:center;
+justify-content:center;
+z-index:9999;
+}
+
+.loader-circle{
+width:60px;
+height:60px;
+border:6px solid #333;
+border-top:6px solid #ff3c3c;
+border-radius:50%;
+animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+0%{transform:rotate(0)}
+100%{transform:rotate(360deg)}
+}
+
+/* ---------------- NAVBAR ---------------- */
+
+.navbar{
+position:fixed;
+top:0;
+width:100%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 40px;
+background:rgba(0,0,0,0.5);
+backdrop-filter:blur(12px);
+z-index:1000;
+}
+
+.logo{
+font-size:28px;
+font-weight:bold;
+color:#ff3c3c;
+}
+
+.menu a{
+margin:0 15px;
+text-decoration:none;
+color:white;
+font-size:15px;
+transition:0.3s;
+}
+
+.menu a:hover,
+.menu a.active{
+color:#ff3c3c;
+}
+
+.user-bar{
+margin-left:20px;
+color:#fff;
+font-size:14px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.user-bar button{
+background:rgba(255,255,255,0.08);
+border:1px solid rgba(255,255,255,0.18);
+padding:8px 14px;
+border-radius:999px;
+color:#fff;
+font-size:13px;
+letter-spacing:0.2px;
+cursor:pointer;
+transition:background .25s, border-color .25s, transform .25s;
+}
+
+.user-bar button:hover{
+background:rgba(255,255,255,0.14);
+border-color:#ff3c3c;
+transform:translateY(-1px);
+}
+
+.search{
+min-width:220px;
+max-width:280px;
+padding:10px 18px;
+border-radius:999px;
+border:1px solid rgba(255,255,255,0.1);
+background:rgba(255,255,255,0.05);
+color:white;
+outline:none;
+transition:background .25s, border-color .25s, transform .25s;
+}
+
+.search:focus{
+background:rgba(255,255,255,0.12);
+border-color:rgba(255,60,60,0.8);
+transform:scale(1.02);
+}
+
+.auth-overlay{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.95);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:3000;
+}
+
+.hero{
+box-shadow:inset 0 0 120px rgba(0,0,0,0.5);
+}
+
+.hero::before{
+content:'';
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.65) 100%);
+z-index:1;
+}
+
+.hero-content{
+position:absolute;
+bottom:100px;
+left:60px;
+max-width:520px;
+z-index:2;
+}
+
+.hero h1{
+font-size:58px;
+letter-spacing:0.6px;
+}
+
+.hero p{
+color:#ddd;
+max-width:480px;
+font-size:17px;
+line-height:1.65;
+}
+
+.btn{
+box-shadow:0 16px 40px rgba(0,0,0,0.35);
+}
+
+.play{
+background:linear-gradient(135deg, #ff3c3c, #ff6a6a);
+color:white;
+}
+
+.info{
+background:rgba(255,255,255,0.08);
+color:#fff;
+}
+
+.row{
+margin-top:48px;
+padding-left:40px;
+}
+
+.row h2{
+margin-bottom:18px;
+letter-spacing:0.5px;
+text-transform:uppercase;
+font-size:18px;
+color:#eee;
+}
+
+.card{
+min-width:240px;
+height:160px;
+margin-right:18px;
+border-radius:18px;
+background-size:cover;
+background-position:center;
+position:relative;
+cursor:pointer;
+transition:transform .35s, box-shadow .35s, border-color .35s;
+border:1px solid rgba(255,255,255,0.08);
+}
+
+.card:hover{
+transform:scale(1.07);
+box-shadow:0 22px 60px rgba(0,0,0,0.65);
+}
+
+.card::before{
+content:'';
+position:absolute;
+inset:0;
+background:linear-gradient(180deg, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.7) 100%);
+border-radius:18px;
+}
+
+.card-title,
+.card-meta{
+position:absolute;
+left:16px;
+right:16px;
+z-index:2;
+}
+
+.card-title{
+bottom:34px;
+font-size:15px;
+}
+
+.card-meta{
+bottom:14px;
+font-size:12px;
+}
+
+.category-chip{
+background:rgba(255,255,255,0.04);
+}
+
+.category-chip:hover,
+.category-chip.active{
+background:linear-gradient(135deg, #ff3c3c, #ff6a6a);
+color:#fff;
+}
+
+.modal video{
+width:85%;
+max-width:1100px;
+border-radius:18px;
+box-shadow:0 30px 80px rgba(0,0,0,0.65);
+}
+
+.close{
+top:30px;
+right:30px;
+}
+
+.auth-panel{
+width:min(420px,95%);
+background:#121212;
+padding:30px;
+border-radius:18px;
+box-shadow:0 20px 80px rgba(0,0,0,0.7);
+}
+
+.auth-panel h2{
+margin-bottom:20px;
+font-size:24px;
+}
+
+.auth-panel button,
+.auth-panel input{
+width:100%;
+margin-top:12px;
+}
+
+.auth-panel input{
+padding:12px 14px;
+border-radius:12px;
+border:1px solid #333;
+background:#171717;
+color:white;
+}
+
+.auth-panel button{
+padding:12px 14px;
+border:none;
+border-radius:12px;
+background:#ff3c3c;
+color:white;
+font-weight:700;
+cursor:pointer;
+}
+
+.auth-panel .secondary-btn{
+background:#222;
+}
+
+.auth-panel p {
+color:#bbb;
+font-size:14px;
+margin-top:10px;
+}
+
+.auth-panel .small-btn{
+background:transparent;
+border:1px solid rgba(255,255,255,0.15);
+color:#fff;
+}
+
+.locked-card{
+filter:grayscale(70%);
+opacity:0.8;
+}
+
+.locked-card .badge{
+background:#999;
+}
+
+.locked-message {
+margin: 16px 0 0;
+color: #ff6b6b;
+font-size: 14px;
+}
+
+/* ---------------- HERO SLIDER ---------------- */
+
+.hero{
+height:85vh;
+position:relative;
+overflow:hidden;
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+background-size:cover;
+background-position:center;
+opacity:0;
+transition:opacity 1s;
+}
+
+.slide.active{
+opacity:1;
+}
+
+.hero-content{
+position:absolute;
+bottom:120px;
+left:60px;
+max-width:500px;
+}
+
+.hero h1{
+font-size:55px;
+margin-bottom:10px;
+}
+
+.hero p{
+color:#ccc;
+margin-bottom:15px;
+}
+
+.btn{
+padding:10px 25px;
+border:none;
+border-radius:25px;
+margin-right:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.play{
+background:#ff3c3c;
+color:white;
+}
+
+.info{
+background:#444;
+color:white;
+}
+
+/* ---------------- MOVIE ROW ---------------- */
+
+.row{
+margin-top:40px;
+padding-left:40px;
+}
+
+.row h2{
+margin-bottom:15px;
+}
+
+.slider-container{
+position:relative;
+}
+
+.slider{
+display:flex;
+overflow-x:auto;
+scroll-behavior:smooth;
+}
+
+.slider::-webkit-scrollbar{
+display:none;
+}
+
+.card{
+min-width:220px;
+height:130px;
+margin-right:15px;
+border-radius:10px;
+background-size:cover;
+background-position:center;
+position:relative;
+cursor:pointer;
+transition:transform .4s, box-shadow .4s;
+}
+
+.card:hover{
+transform:scale(1.2) rotateY(10deg);
+box-shadow:0 10px 30px rgba(0,0,0,0.8);
+z-index:2;
+}
+
+.badge{
+position:absolute;
+top:10px;
+left:10px;
+background:#ff3c3c;
+padding:3px 7px;
+font-size:11px;
+border-radius:4px;
+}
+
+.card-title{
+position:absolute;
+bottom:26px;
+left:10px;
+right:10px;
+font-size:14px;
+font-weight:700;
+color:#fff;
+text-shadow:0 2px 10px rgba(0,0,0,0.7);
+z-index:1;
+}
+
+.card-meta{
+position:absolute;
+bottom:8px;
+left:10px;
+right:10px;
+font-size:12px;
+color:#ddd;
+text-shadow:0 1px 6px rgba(0,0,0,0.7);
+z-index:1;
+}
+
+.no-results{
+margin:20px 40px 0;
+color:#bbb;
+font-size:16px;
+}
+
+.menu a:hover,
+.menu a.active{
+color:#ff3c3c;
+}
+
+.category-bar{
+display:flex;
+gap:10px;
+padding:10px 40px;
+overflow-x:auto;
+scroll-behavior:smooth;
+}
+
+.category-bar::-webkit-scrollbar{
+display:none;
+}
+
+.category-chip{
+flex:0 0 auto;
+padding:10px 16px;
+border-radius:999px;
+background:#1a1a1a;
+border:1px solid rgba(255,255,255,0.1);
+color:#fff;
+font-size:13px;
+cursor:pointer;
+white-space:nowrap;
+transition:background .2s, transform .2s, border-color .2s;
+}
+
+.category-chip:hover,
+.category-chip.active{
+background:#ff3c3c;
+border-color:#ff3c3c;
+transform:scale(1.02);
+}
+
+/* arrows */
+
+.arrow{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+font-size:35px;
+cursor:pointer;
+background:rgba(0,0,0,0.7);
+padding:8px 14px;
+border-radius:50%;
+color:#fff;
+transition:background .2s, transform .2s;
+z-index:10;
+user-select:none;
+}
+
+.arrow:hover{
+background:rgba(255,60,60,0.95);
+transform:translateY(-50%) scale(1.05);
+}
+
+.arrow-left{
+left:0;
+}
+
+.arrow-right{
+right:0;
+}
+
+/* ---------------- MODAL PLAYER ---------------- */
+
+.modal{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.95);
+display:none;
+align-items:center;
+justify-content:center;
+z-index:2000;
+}
+
+.modal video{
+width:80%;
+border-radius:10px;
+}
+
+.close{
+position:absolute;
+top:40px;
+right:60px;
+font-size:35px;
+cursor:pointer;
+}
+
+/* ---------------- FOOTER ---------------- */
+
+footer{
+margin-top:80px;
+padding:40px;
+background:#111;
+text-align:center;
+color:#888;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:35px;
+}
+
+.card{
+min-width:150px;
+height:100px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- LOADER -->
+
+<div id="loader">
+<div class="loader-circle"></div>
+</div>
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+<div class="logo">StreamVerse</div>
+
+<div class="menu">
+<a href="#" data-nav="home">Home</a>
+<a href="#" data-nav="movies">Movies</a>
+<a href="#" data-nav="series">Series</a>
+<a href="#" data-nav="trending">Trending</a>
+<a href="#" data-nav="categories">Categories</a>
+</div>
+
+<div class="user-bar" id="user-bar"></div>
+
+<input class="search" id="search" placeholder="Search movies">
+
+</div>
+
+<div class="auth-overlay" id="auth-overlay">
+  <div class="auth-panel" id="auth-panel">
+    <h2>Welcome to StreamVerse</h2>
+    <button onclick="showLogin()">Login</button>
+    <button class="secondary-btn" onclick="showSignUp()">Sign Up</button>
+    <button class="secondary-btn" onclick="continueAsGuest()">Continue as Guest</button>
+    <p id="auth-info">Login or sign up to get full access. Guests can browse some movies only.</p>
+  </div>
+</div>
+
+
+<!-- HERO SLIDER -->
+
+<div class="hero">
+
+<div class="slide active" style="background-image:url('https://picsum.photos/1920/900?1')"></div>
+<div class="slide" style="background-image:url('https://picsum.photos/1920/900?2')"></div>
+<div class="slide" style="background-image:url('https://picsum.photos/1920/900?3')"></div>
+
+<div class="hero-content">
+
+<h1>Galactic Wars</h1>
+
+<p>An epic interstellar adventure across galaxies.</p>
+
+<button class="btn play" onclick="handleHeroPlay()">Play</button>
+<button class="btn info">More Info</button>
+
+</div>
+
+</div>
+
+
+<!-- CATEGORY BAR -->
+
+<div class="row" id="category-bar-row">
+  <div class="category-bar" id="category-bar"></div>
+</div>
+
+
+<!-- MOVIE ROW -->
+
+<div class="row" id="trending-row">
+
+<h2>Trending Now</h2>
+
+<div class="slider-container">
+
+<div class="arrow arrow-left" onclick="scrollLeftRow(this)">❮</div>
+
+<div class="slider" id="trending-slider"></div>
+
+<div class="arrow arrow-right" onclick="scrollRightRow(this)">❯</div>
+
+</div>
+
+</div>
+
+
+<!-- SECOND ROW -->
+
+<div class="row" id="popular-row">
+
+<h2>Popular Movies</h2>
+
+<div class="slider" id="popular-slider"></div>
+
+</div>
+
+
+<!-- SERIES ROW -->
+
+<div class="row" id="series-row" style="display:none;">
+
+<h2>Series</h2>
+
+<div class="slider" id="series-slider"></div>
+<div class="no-results" id="series-no-results" style="display:none;">No series available.</div>
+
+</div>
+
+
+<!-- CATEGORY RESULTS -->
+
+<div class="row" id="category-row" style="display:none;">
+  <h2 id="category-header">Category</h2>
+  <div class="slider" id="category-slider"></div>
+  <div class="no-results" id="category-no-results" style="display:none;">No movies found in this category.</div>
+</div>
+
+
+<!-- SEARCH RESULTS -->
+
+<div class="row" id="search-row" style="display:none;">
+  <h2>Search Results</h2>
+  <div class="slider" id="search-slider"></div>
+  <div class="no-results" id="no-results" style="display:none;">No movies matched your search.</div>
+</div>
+
+
+<!-- VIDEO PLAYER -->
+
+<div class="modal" id="player">
+
+<span class="close" onclick="closeMovie()">✖</span>
+<div class="player-warning" id="player-warning"></div>
+
+<video controls>
+
+<source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+
+</video>
+
+</div>
+
+
+<footer>
+
+<p>© 2026 StreamVerse — All Rights Reserved</p>
+
+</footer>
+
+
+<script>
+
+const apiUrl = "http://localhost:3000";
+let allMovies = [];
+let categories = [];
+let activeCategory = "";
+let currentUser = null;
+let authToken = null;
+let featuredMovie = null;
+const guestAllowedIds = new Set([1,2,3,4,5,6,7,8,9,10]);
+
+function getStoredToken(){
+  return localStorage.getItem('streamverse_token');
+}
+
+function setStoredToken(token){
+  if(token){
+    localStorage.setItem('streamverse_token', token);
+  } else {
+    localStorage.removeItem('streamverse_token');
+  }
+}
+
+function authHeader(){
+  return authToken ? { Authorization: `Bearer ${authToken}` } : {};
+}
+
+async function validateSession(){
+  authToken = getStoredToken();
+  if(!authToken){
+    currentUser = null;
+    return;
+  }
+  try {
+    const response = await fetch(`${apiUrl}/auth/me`, {
+      headers: { ...authHeader(), "Content-Type": "application/json" }
+    });
+    if(!response.ok){
+      authToken = null;
+      setStoredToken(null);
+      currentUser = null;
+      return;
+    }
+    const data = await response.json();
+    currentUser = data.user;
+  } catch (error) {
+    console.warn("Session validation failed:", error);
+    authToken = null;
+    setStoredToken(null);
+    currentUser = null;
+  }
+}
+
+function setCurrentUser(user, token){
+  currentUser = user;
+  if(token){
+    authToken = token;
+    setStoredToken(token);
+  }
+  updateUserBar();
+  updateAccess();
+  setAuthNote();
+  hideAuthOverlay();
+}
+
+function setAuthInfo(message, isError = false){
+  const info = document.getElementById('auth-info');
+  if(!info) return;
+  info.textContent = message;
+  info.style.color = isError ? '#ff8a8a' : '#bbb';
+}
+
+function isGuest(){
+  return currentUser && currentUser.role === 'guest';
+}
+
+function isLoggedIn(){
+  return currentUser && currentUser.role === 'member';
+}
+
+function showAuthOverlay(message){
+  document.getElementById('auth-overlay').style.display = 'flex';
+  if(message){
+    document.getElementById('auth-info').textContent = message;
+  }
+}
+
+function hideAuthOverlay(){
+  document.getElementById('auth-overlay').style.display = 'none';
+}
+
+function setAuthNote(){
+  const note = document.getElementById('auth-note');
+  if(!note) return;
+  if(isGuest()){
+    note.textContent = 'Guest mode is limited. To get full StreamVerse access, please sign in.';
+  } else if(isLoggedIn()){
+    note.textContent = '';
+  } else {
+    note.textContent = 'Please sign in or create an account to unlock everything.';
+  }
+}
+
+function showLogin(){
+  document.getElementById('auth-panel').innerHTML = `
+    <h2>Login</h2>
+    <input id="login-email" type="email" placeholder="Email" />
+    <input id="login-password" type="password" placeholder="Password" />
+    <button onclick="handleLogin()">Login</button>
+    <button class="secondary-btn" onclick="showSignUp()">Create account</button>
+    <button class="secondary-btn" onclick="continueAsGuest()">Guest access</button>
+    <p id="auth-info">Use your email and password to login, or sign up for full access.</p>
+  `;
+}
+
+function showSignUp(){
+  document.getElementById('auth-panel').innerHTML = `
+    <h2>Sign Up</h2>
+    <input id="signup-name" type="text" placeholder="Name" />
+    <input id="signup-email" type="email" placeholder="Email" />
+    <input id="signup-password" type="password" placeholder="Password" />
+    <button onclick="handleSignUp()">Sign Up</button>
+    <button class="secondary-btn" onclick="showLogin()">Already have account</button>
+    <button class="secondary-btn" onclick="continueAsGuest()">Guest access</button>
+    <p id="auth-info">Create an account to get full access to all movies.</p>
+  `;
+}
+
+async function handleLogin(){
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  if(!email || !password){
+    setAuthInfo('Both email and password are required.', true);
+    return;
+  }
+  try {
+    const response = await fetch(`${apiUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await response.json();
+    if(!response.ok){
+      setAuthInfo(data.error || 'Login failed.', true);
+      return;
+    }
+    setCurrentUser(data.user, data.token);
+    await loadCategories();
+    await loadMovies();
+  } catch (error) {
+    setAuthInfo(`Unable to login. ${error.message}`, true);
+    console.error(error);
+  }
+}
+
+async function handleSignUp(){
+
+  const name = document.getElementById('signup-name').value.trim();
+  const email = document.getElementById('signup-email').value.trim();
+  const password = document.getElementById('signup-password').value;
+  if(!name || !email || !password){
+    setAuthInfo('Please fill every field.', true);
+    return;
+  }
+  try {
+    const response = await fetch(`${apiUrl}/auth/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await response.json();
+    if(!response.ok){
+      setAuthInfo(data.error || 'Sign up failed.', true);
+      return;
+    }
+    setCurrentUser(data.user, data.token);
+    await loadCategories();
+    await loadMovies();
+  } catch (error) {
+    setAuthInfo(`Unable to sign up. ${error.message}`, true);
+    console.error(error);
+  }
+}
+
+async function continueAsGuest(){
+  try {
+    const response = await fetch(`${apiUrl}/auth/guest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' }
+    });
+    const data = await response.json();
+    if(!response.ok){
+      setAuthInfo(data.error || 'Unable to continue as guest. Try again later.', true);
+      return;
+    }
+    setCurrentUser(data.user, data.token);
+    await loadCategories();
+    await loadMovies();
+  } catch (error) {
+    console.error('Guest access failed:', error);
+    setAuthInfo(`Unable to continue as guest. ${error.message}`, true);
+  }
+}
+
+function logout(){
+  setStoredToken(null);
+  currentUser = null;
+  authToken = null;
+  updateUserBar();
+  updateAccess();
+  setAuthNote();
+  showLogin();
+  showAuthOverlay('You have been logged out. Please login, sign up, or continue as guest.');
+}
+
+function updateUserBar(){
+  const bar = document.getElementById('user-bar');
+  if(currentUser){
+    if(isGuest()){
+      bar.innerHTML = `Guest access <button onclick="logout()">Logout</button>`;
+    } else {
+      bar.innerHTML = `Hello, ${currentUser.name} <button onclick="logout()">Logout</button>`;
+    }
+  } else {
+    bar.innerHTML = `Welcome <button onclick="showLogin(); showAuthOverlay()">Sign In</button>`;
+  }
+}
+
+function updateAccess(){
+  const search = document.getElementById('search');
+  const categoriesLink = document.querySelector('.menu a[data-nav="categories"]');
+  const seriesLink = document.querySelector('.menu a[data-nav="series"]');
+  if(isGuest()){
+    search.disabled = true;
+    search.placeholder = 'Guest search disabled';
+    categoriesLink.style.opacity = '0.35';
+    categoriesLink.style.pointerEvents = 'none';
+    seriesLink.style.opacity = '0.35';
+    seriesLink.style.pointerEvents = 'none';
+    document.getElementById('category-bar-row').style.display = 'none';
+    document.getElementById('category-row').style.display = 'none';
+  } else {
+    search.disabled = false;
+    search.placeholder = 'Search movies';
+    categoriesLink.style.opacity = '1';
+    categoriesLink.style.pointerEvents = 'auto';
+    seriesLink.style.opacity = '1';
+    seriesLink.style.pointerEvents = 'auto';
+  }
+}
+
+function guestCanWatch(movie){
+  return isLoggedIn() || (movie && movie.video && (guestAllowedIds.has(movie.id) || movie.isTrending));
+}
+
+const fallbackCategories = [
+  { id: 1, name: "Sci-Fi", description: "Futuristic and space storytelling." },
+  { id: 2, name: "Action", description: "High-energy thrillers with fast-paced stakes." },
+  { id: 3, name: "Drama", description: "Character-driven stories with emotional depth." },
+  { id: 4, name: "Comedy", description: "Laugh-out-loud moments and witty humor." },
+  { id: 5, name: "Thriller", description: "Edge-of-your-seat suspense and mystery." },
+  { id: 6, name: "Horror", description: "Dark, scary tales that keep you on edge." },
+  { id: 7, name: "Romance", description: "Love stories with heart and warmth." },
+  { id: 8, name: "Documentary", description: "Real-world stories and eye-opening facts." },
+  { id: 9, name: "Fantasy", description: "Magic, myth, and epic adventure." },
+  { id: 10, name: "Mystery", description: "Unravel secrets and hidden clues." },
+  { id: 11, name: "Adventure", description: "Journey-based stories with big thrills." },
+  { id: 12, name: "Animation", description: "Animated worlds full of fun and wonder." },
+  { id: 13, name: "Crime", description: "Heists, investigations, and gritty drama." },
+  { id: 14, name: "Family", description: "Stories for every age with warm values." },
+  { id: 15, name: "Musical", description: "Songs and dance woven into story." },
+  { id: 16, name: "Western", description: "Frontier action and lawless landscapes." },
+  { id: 17, name: "Biography", description: "True-life portraits of fascinating people." },
+  { id: 18, name: "Sports", description: "Games, competition, and comeback stories." },
+  { id: 19, name: "History", description: "Epic tales from the past." },
+  { id: 20, name: "Series", description: "Binge-worthy episodic storytelling." }
+];
+const fallbackMovies = [
+  { id: 1, title: "Interstellar", description: "A space crew battles gravity to save humanity.", genre: "Sci-Fi", category: "Sci-Fi", year: 2014, rating: "8.6", thumbnail: "https://picsum.photos/300/200?1", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: true },
+  { id: 2, title: "Galaxy Adventure", description: "Explore new worlds in this high-energy sci-fi journey.", genre: "Adventure", category: "Adventure", year: 2022, rating: "7.8", thumbnail: "https://picsum.photos/300/200?2", video: "https://www.w3schools.com/html/movie.mp4", isTrending: true },
+  { id: 3, title: "Future Planet", description: "A bold mission to discover life beyond Earth.", genre: "Sci-Fi", category: "Sci-Fi", year: 2021, rating: "8.0", thumbnail: "https://picsum.photos/300/200?3", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: true },
+  { id: 4, title: "Midnight Chase", description: "A thriller that moves at breakneck speed.", genre: "Thriller", category: "Thriller", year: 2023, rating: "7.4", thumbnail: "https://picsum.photos/300/200?4", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 5, title: "Neon City", description: "A cyberpunk story of rebels and neon lights.", genre: "Action", category: "Action", year: 2020, rating: "7.6", thumbnail: "https://picsum.photos/300/200?5", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 6, title: "Deep Ocean", description: "A documentary dive into the ocean’s hidden wonders.", genre: "Documentary", category: "Documentary", year: 2024, rating: "8.2", thumbnail: "https://picsum.photos/300/200?6", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 7, title: "Skyward", description: "A pilot’s journey above the clouds.", genre: "Drama", category: "Drama", year: 2022, rating: "7.9", thumbnail: "https://picsum.photos/300/200?7", video: "https://www.w3schools.com/html/movie.mp4", isTrending: false },
+  { id: 8, title: "Quantum Leap", description: "A scientist unlocks the secrets of time travel.", genre: "Sci-Fi", category: "Sci-Fi", year: 2025, rating: "8.3", thumbnail: "https://picsum.photos/300/200?8", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 9, title: "Horizon Run", description: "A daring escape across the desert.", genre: "Action", category: "Action", year: 2021, rating: "7.5", thumbnail: "https://picsum.photos/300/200?9", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 10, title: "Echoes", description: "An emotional drama about family and memory.", genre: "Drama", category: "Drama", year: 2023, rating: "8.1", thumbnail: "https://picsum.photos/300/200?10", video: "https://www.w3schools.com/html/movie.mp4", isTrending: false },
+  { id: 11, title: "Rogue Galaxy", description: "A band of outlaws take on the galaxy.", genre: "Adventure", category: "Adventure", year: 2024, rating: "8.0", thumbnail: "https://picsum.photos/300/200?11", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 12, title: "Solar Winds", description: "A race through cosmic storms.", genre: "Action", category: "Action", year: 2023, rating: "7.7", thumbnail: "https://picsum.photos/300/200?12", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 13, title: "Shadow Code", description: "A hacker uncovers a global conspiracy.", genre: "Thriller", category: "Thriller", year: 2024, rating: "7.9", thumbnail: "https://picsum.photos/300/200?13", video: "https://www.w3schools.com/html/movie.mp4", isTrending: true },
+  { id: 14, title: "Aurora", description: "A love story unfolds under the northern lights.", genre: "Romance", category: "Romance", year: 2022, rating: "7.8", thumbnail: "https://picsum.photos/300/200?14", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 15, title: "Iron Fortress", description: "A war robot protects its last city.", genre: "Sci-Fi", category: "Sci-Fi", year: 2023, rating: "8.0", thumbnail: "https://picsum.photos/300/200?15", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 16, title: "Wild Track", description: "A wildlife tracker navigates the untamed frontier.", genre: "Adventure", category: "Adventure", year: 2021, rating: "7.6", thumbnail: "https://picsum.photos/300/200?16", video: "https://www.w3schools.com/html/movie.mp4", isTrending: false },
+  { id: 17, title: "Crystal Cove", description: "Mystery and magic collide in a seaside town.", genre: "Fantasy", category: "Fantasy", year: 2024, rating: "7.9", thumbnail: "https://picsum.photos/300/200?17", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 18, title: "Retro Drive", description: "A nostalgic road trip through neon-lit highways.", genre: "Drama", category: "Drama", year: 2020, rating: "7.4", thumbnail: "https://picsum.photos/300/200?18", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 19, title: "Nightfall", description: "A detective races the clock before dawn.", genre: "Mystery", category: "Mystery", year: 2023, rating: "8.2", thumbnail: "https://picsum.photos/300/200?19", video: "https://www.w3schools.com/html/movie.mp4", isTrending: true },
+  { id: 20, title: "Echo Planet", description: "An alien world echoes the secrets of its past.", genre: "Sci-Fi", category: "Sci-Fi", year: 2025, rating: "8.4", thumbnail: "https://picsum.photos/300/200?20", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 21, title: "Laugh Track", description: "A comedian learns to turn pain into punchlines.", genre: "Comedy", category: "Comedy", year: 2022, rating: "7.4", thumbnail: "https://picsum.photos/300/200?21", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/river.mp4", isTrending: false },
+  { id: 22, title: "Dark Harvest", description: "A small town is terrorized by a restless spirit.", genre: "Horror", category: "Horror", year: 2024, rating: "7.3", thumbnail: "https://picsum.photos/300/200?22", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/snow.mp4", isTrending: false },
+  { id: 23, title: "Homecoming", description: "A father and daughter reconnect after years apart.", genre: "Family", category: "Family", year: 2021, rating: "7.9", thumbnail: "https://picsum.photos/300/200?23", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4", isTrending: false },
+  { id: 24, title: "Stage Lights", description: "A musical dream to perform on Broadway.", genre: "Musical", category: "Musical", year: 2023, rating: "7.8", thumbnail: "https://picsum.photos/300/200?24", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/boat.mp4", isTrending: false },
+  { id: 25, title: "Dusty Trails", description: "A lone cowboy fights to protect his ranch.", genre: "Western", category: "Western", year: 2022, rating: "7.6", thumbnail: "https://picsum.photos/300/200?25", video: "https://www.w3schools.com/html/movie.mp4", isTrending: false },
+  { id: 26, title: "Life of a Legend", description: "A biography of an icon who changed the world.", genre: "Biography", category: "Biography", year: 2024, rating: "8.2", thumbnail: "https://picsum.photos/300/200?26", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/earth.mp4", isTrending: false },
+  { id: 27, title: "Final Quarter", description: "A true sports comeback that stunned the crowd.", genre: "Sports", category: "Sports", year: 2023, rating: "8.0", thumbnail: "https://picsum.photos/300/200?27", video: "https://www.w3schools.com/html/mov_bbb.mp4", isTrending: false },
+  { id: 28, title: "Past Echoes", description: "A history epic that recreates a world at war.", genre: "History", category: "History", year: 2022, rating: "7.7", thumbnail: "https://picsum.photos/300/200?28", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/mountain.mp4", isTrending: false },
+  { id: 29, title: "Dream Frame", description: "A young artist discovers an animated world.", genre: "Animation", category: "Animation", year: 2024, rating: "8.1", thumbnail: "https://picsum.photos/300/200?29", video: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/forest.mp4", isTrending: false },
+  { id: 30, title: "City of Lies", description: "A gritty crime drama inside a corrupt metropolis.", genre: "Crime", category: "Crime", year: 2023, rating: "7.9", thumbnail: "https://picsum.photos/300/200?30", video: "https://www.w3schools.com/html/movie.mp4", isTrending: false }
+];
+
+function hideLoader(){
+  document.getElementById("loader").style.display = "none";
+}
+
+function startHeroSlider(){
+  let slides = document.querySelectorAll(".slide");
+  let index = 0;
+  setInterval(() => {
+    slides[index].classList.remove("active");
+    index = (index + 1) % slides.length;
+    slides[index].classList.add("active");
+  }, 4000);
+}
+
+async function loadCategories(){
+  try {
+    let response = await fetch(`${apiUrl}/categories`, {
+      headers: authHeader()
+    });
+    categories = response.ok ? await response.json() : fallbackCategories;
+  } catch (error) {
+    console.error("Failed to load categories:", error);
+    categories = fallbackCategories;
+  }
+  renderCategoryChips(categories);
+}
+
+async function loadMovies(){
+  try {
+    let response = await fetch(`${apiUrl}/movies`, {
+      headers: authHeader()
+    });
+    let movies = response.ok ? await response.json() : fallbackMovies;
+    allMovies = movies;
+    renderHero(movies);
+    renderSection("trending-slider", movies.filter(movie => movie.isTrending).slice(0, 8));
+    renderSection("popular-slider", movies.slice(0, 12));
+  } catch(error) {
+    console.error("Failed to load movies:", error);
+    allMovies = fallbackMovies;
+    renderHero(fallbackMovies);
+    renderSection("trending-slider", fallbackMovies.filter(movie => movie.isTrending).slice(0, 8));
+    renderSection("popular-slider", fallbackMovies.slice(0, 12));
+  }
+}
+
+function renderCategoryChips(list){
+  let bar = document.getElementById("category-bar");
+  bar.innerHTML = "";
+  list.forEach(category => {
+    let chip = document.createElement("button");
+    chip.className = "category-chip";
+    chip.textContent = category.name;
+    chip.onclick = () => showCategory(category.name);
+    bar.appendChild(chip);
+  });
+}
+
+function renderHero(movies){
+  if(!movies.length) return;
+  let featured = movies[0];
+  document.querySelector(".hero").style.backgroundImage = `url('https://picsum.photos/1920/900?${featured.id}')`;
+  featuredMovie = featured;
+  document.querySelector(".hero-content h1").textContent = featured.title;
+  document.querySelector(".hero-content p").textContent = featured.description || "Stream the latest hit now.";
+  document.querySelector(".btn.play").onclick = handleHeroPlay;
+}
+
+function handleHeroPlay(){
+  if(!featuredMovie){
+    return;
+  }
+  handleMovieClick(featuredMovie);
+}
+
+function showPlayerWarning(message){
+  const warning = document.getElementById('player-warning');
+  warning.textContent = message;
+  warning.classList.add('active');
+  document.getElementById('player').style.display = 'flex';
+}
+
+function renderSection(containerId, movies){
+  let slider = document.getElementById(containerId);
+  slider.innerHTML = "";
+  movies.forEach(movie => {
+    let card = document.createElement("div");
+    const locked = isGuest() && !guestCanWatch(movie);
+    card.className = `card${locked ? ' locked-card' : ''}`;
+    card.style.backgroundImage = `url('${movie.thumbnail || 'https://picsum.photos/300/200?' + movie.id}')`;
+    card.onclick = () => handleMovieClick(movie);
+    card.innerHTML = `
+      ${movie.isTrending ? '<div class="badge">TRENDING</div>' : ''}
+      ${locked ? '<div class="badge">LOCKED</div>' : ''}
+      <div class="card-title">${movie.title}</div>
+      <div class="card-meta">${movie.year} • ${movie.genre} • ${movie.rating}</div>
+    `;
+    slider.appendChild(card);
+  });
+}
+
+function handleMovieClick(movie){
+  if(!movie.video){
+    showPlayerWarning('To get full access of StreamVerse get sign-in.');
+    return;
+  }
+  if(isGuest() && !guestCanWatch(movie)){
+    showPlayerWarning('To get full access of StreamVerse get sign-in.');
+    return;
+  }
+  playMovie(movie.video, movie.title);
+}
+
+function playMovie(videoUrl, title){
+  let player = document.getElementById("player");
+  let source = player.querySelector("source");
+  let warning = document.getElementById('player-warning');
+  warning.classList.remove('active');
+  warning.textContent = '';
+  if(videoUrl){
+    source.src = videoUrl;
+    player.querySelector("video").load();
+  }
+  if(title){
+    document.querySelector(".hero-content h1").textContent = title;
+  }
+  player.style.display = "flex";
+}
+
+async function showCategory(categoryName){
+  activeCategory = categoryName;
+  let trendingRow = document.getElementById("trending-row");
+  let popularRow = document.getElementById("popular-row");
+  let seriesRow = document.getElementById("series-row");
+  let searchRow = document.getElementById("search-row");
+  let categoryRow = document.getElementById("category-row");
+  let categoryBarRow = document.getElementById("category-bar-row");
+
+  trendingRow.style.display = "none";
+  popularRow.style.display = "none";
+  seriesRow.style.display = "none";
+  searchRow.style.display = "none";
+  categoryRow.style.display = "block";
+  categoryBarRow.style.display = "block";
+
+  let results = [];
+  try {
+    const response = await fetch(`${apiUrl}/movies?category=${encodeURIComponent(categoryName)}`, {
+      headers: authHeader()
+    });
+    results = response.ok ? await response.json() : allMovies.filter(movie => movie.category.toLowerCase() === categoryName.toLowerCase());
+  } catch (error) {
+    console.error('Category load failed:', error);
+    results = allMovies.filter(movie => movie.category.toLowerCase() === categoryName.toLowerCase());
+  }
+
+  document.getElementById("category-header").textContent = `Category: ${categoryName}`;
+  renderSection("category-slider", results);
+  document.getElementById("category-no-results").style.display = results.length ? "none" : "block";
+  highlightNav("categories");
+  markActiveCategory(categoryName);
+}
+
+function showSection(section){
+  let trendingRow = document.getElementById("trending-row");
+  let popularRow = document.getElementById("popular-row");
+  let seriesRow = document.getElementById("series-row");
+  let searchRow = document.getElementById("search-row");
+  let categoryRow = document.getElementById("category-row");
+  let categoryBarRow = document.getElementById("category-bar-row");
+
+  trendingRow.style.display = "none";
+  popularRow.style.display = "none";
+  seriesRow.style.display = "none";
+  searchRow.style.display = "none";
+  categoryRow.style.display = "none";
+  categoryBarRow.style.display = "none";
+
+  if(section === "home" || section === "movies"){
+    trendingRow.style.display = "block";
+    popularRow.style.display = "block";
+    categoryBarRow.style.display = "block";
+  } else if(section === "trending"){
+    trendingRow.style.display = "block";
+  } else if(section === "series"){
+    showCategory("Series");
+    return;
+  } else if(section === "categories"){
+    categoryBarRow.style.display = "block";
+    if(categories.length){
+      if(!activeCategory){
+        activeCategory = categories[0].name;
+      }
+      showCategory(activeCategory);
+      return;
+    }
+  }
+
+  highlightNav(section);
+  markActiveCategory("");
+}
+
+function highlightNav(section){
+  document.querySelectorAll(".menu a").forEach(link => {
+    link.classList.toggle("active", link.dataset.nav === section);
+  });
+}
+
+function markActiveCategory(categoryName){
+  document.querySelectorAll(".category-chip").forEach(chip => {
+    chip.classList.toggle("active", chip.textContent.toLowerCase() === categoryName.toLowerCase());
+  });
+}
+
+function playMovie(videoUrl, title){
+  let player = document.getElementById("player");
+  let source = player.querySelector("source");
+  if(videoUrl){
+    source.src = videoUrl;
+    player.querySelector("video").load();
+  }
+  if(title){
+    document.querySelector(".hero-content h1").textContent = title;
+  }
+  player.style.display = "flex";
+}
+
+function closeMovie(){
+  document.getElementById("player").style.display = "none";
+}
+
+function scrollLeftRow(el){
+  let slider = el.parentElement.querySelector(".slider");
+  slider.scrollLeft -= 420;
+}
+
+function scrollRightRow(el){
+  let slider = el.parentElement.querySelector(".slider");
+  slider.scrollLeft += 420;
+}
+
+let search = document.getElementById("search");
+search.addEventListener("input", async function(){
+  if(isGuest()){
+    this.value = "";
+    alert('Guest access has no search. Please sign in for full access.');
+    return;
+  }
+
+  let query = this.value.trim().toLowerCase();
+  let searchRow = document.getElementById("search-row");
+  let noResults = document.getElementById("no-results");
+  let trendingRow = document.getElementById("trending-row");
+  let popularRow = document.getElementById("popular-row");
+  let seriesRow = document.getElementById("series-row");
+  let categoryRow = document.getElementById("category-row");
+  let categoryBarRow = document.getElementById("category-bar-row");
+
+  if(!query){
+    searchRow.style.display = "none";
+    categoryRow.style.display = "none";
+    seriesRow.style.display = "none";
+    categoryBarRow.style.display = "block";
+    trendingRow.style.display = "block";
+    popularRow.style.display = "block";
+    noResults.style.display = "none";
+    highlightNav("home");
+    return;
+  }
+
+  let results = [];
+  try {
+    const response = await fetch(`${apiUrl}/movies?search=${encodeURIComponent(query)}`, {
+      headers: authHeader()
+    });
+    results = response.ok ? await response.json() : [];
+  } catch (error) {
+    console.error('Search failed:', error);
+    results = allMovies.filter(movie => {
+      let text = `${movie.title} ${movie.genre} ${movie.category} ${movie.description}`.toLowerCase();
+      return text.includes(query);
+    });
+  }
+
+  trendingRow.style.display = "none";
+  popularRow.style.display = "none";
+  seriesRow.style.display = "none";
+  categoryRow.style.display = "none";
+  categoryBarRow.style.display = "none";
+  searchRow.style.display = "block";
+
+  if(results.length){
+    noResults.style.display = "none";
+    renderSection("search-slider", results);
+  } else {
+    renderSection("search-slider", []);
+    noResults.style.display = "block";
+  }
+  highlightNav("");
+});
+
+function initNavigation(){
+  document.querySelectorAll(".menu a").forEach(link => {
+    link.addEventListener("click", function(event){
+      event.preventDefault();
+      if(isGuest() && (this.dataset.nav === 'categories' || this.dataset.nav === 'series')){
+        alert('Guest access has limited navigation. Please sign in for full browsing.');
+        return;
+      }
+      let section = this.dataset.nav;
+      document.getElementById("search").value = "";
+      showSection(section);
+    });
+  });
+}
+
+window.onload = async function(){
+  hideLoader();
+  await validateSession();
+  updateUserBar();
+  updateAccess();
+  setAuthNote();
+  if(currentUser){
+    hideAuthOverlay();
+  }
+  startHeroSlider();
+  await loadCategories();
+  await loadMovies();
+  initNavigation();
+  highlightNav("home");
+  showSection("home");
+  if(!currentUser){
+    showAuthOverlay('Please login, sign up, or continue as guest to access StreamVerse.');
+    showLogin();
+  }
+};
+
+</script>
+
+</body>
+</html> 
