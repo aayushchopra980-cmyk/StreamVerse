@@ -124,6 +124,6 @@ http://localhost:3000
 
 ## 👨‍💻 Author
 
-Ayush Chopra
+Aayush Chopra
 
 A beginner developer exploring full-stack web development through real-world projects involving FastAPI, Node.js, JavaScript, and modern web technologies.
